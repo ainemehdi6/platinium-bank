@@ -1,32 +1,40 @@
-import { Table, Column, Model, ForeignKey, BelongsTo, HasOne, HasMany } from 'sequelize-typescript';
-import { CreditCard } from 'src/credit-card/credit-card.entity';
-import { Transaction } from 'src/transaction/transaction.entity';
+// src/account/account.model.ts
+import { Table, Column, Model, ForeignKey, BelongsTo, PrimaryKey, AutoIncrement, DataType } from 'sequelize-typescript';
 import { User } from 'src/user/user.entity';
+export enum AccountType {
+    COURANT = 'courant',
+    PRO = 'pro',
+    LIVRETA = 'livretA',
+    COMMUN = 'commun',
+}
+
 @Table
 export class Account extends Model<Account> {
-  @Column
-  type: string; 
+    @PrimaryKey
+    @AutoIncrement
+    @Column
+    id: number;
 
-  @Column
-  balance: number;
+    @Column({
+        type: DataType.ENUM(...Object.values(AccountType)),
+        allowNull: false,
+    })
+    type: AccountType;
 
-  @ForeignKey(() => User)
-  @Column
-  userId: number;
+    @Column
+    balance: number;
 
-  @BelongsTo(() => User, 'userId')
-  user: User;
+    @ForeignKey(() => User)
+    @Column
+    userId: number;
 
-  @ForeignKey(() => User)
-  @Column({ allowNull: true })
-  secondUserId: number;
+    @BelongsTo(() => User, 'userId')
+    user: User;
 
-  @BelongsTo(() => User, 'secondUserId')
-  secondUser: User;
+    @ForeignKey(() => User)
+    @Column({ allowNull: true })
+    secondUserId: number;
 
-  @HasMany(() => CreditCard)
-  creditCards: CreditCard[];
-
-  @HasMany(() => Transaction)
-  transactions: Transaction[];
+    @BelongsTo(() => User, 'secondUserId')
+    secondUser: User;
 }

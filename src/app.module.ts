@@ -7,9 +7,11 @@ import { TransactionModule } from './transaction/transaction.module';
 import { UserModule } from './user/user.module';
 import { AccessDeniedError } from 'sequelize';
 import { AccountModule } from './account/account.module';
+import { DabModule } from './dab/dab.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [DatabaseModule, CreditCardModule, TransactionModule, UserModule, AccountModule],
+  imports: [DatabaseModule, CreditCardModule, TransactionModule, UserModule, AccountModule, DabModule, AuthModule],
   controllers: [AppController],
   providers: [AppService],
 })

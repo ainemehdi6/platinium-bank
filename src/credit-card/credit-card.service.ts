@@ -34,4 +34,8 @@ export class CreditCardService {
       where: { id },
     });
   }
+
+  async findOneByCardNumberAndPin(cardNumber: string, pin: string): Promise<CreditCard | null> {
+    return CreditCard.findOne({ where: { cardNumber, pin } });
+  }
 }

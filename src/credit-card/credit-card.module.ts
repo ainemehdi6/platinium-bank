@@ -6,5 +6,6 @@ import { creditCardProviders } from './credit-card.providers';
 @Module({
   controllers: [CreditCardController],
   providers: [CreditCardService, ...creditCardProviders],
+  exports: [CreditCardService]
 })
 export class CreditCardModule {}
