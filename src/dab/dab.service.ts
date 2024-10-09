@@ -10,6 +10,7 @@ import { Transaction } from 'src/transaction/transaction.entity';
 import { TransactionService } from 'src/transaction/transaction.service';
 import { User } from 'src/user/user.entity';
 import { UserService } from 'src/user/user.service';
+import { DabLog } from './dab.entity';
 
 @Injectable()
 export class DabService {
@@ -18,17 +19,14 @@ export class DabService {
     private currentCard: CreditCard | null = null;
 
     constructor(
+        @Inject('DAB_LOG_REPOSITORY')
+        private dabLogRepository: typeof DabLog,
         private readonly userService: UserService,
         private readonly creditCardService: CreditCardService,
         private readonly transactionService: TransactionService,
         private readonly accountService: AccountService,
-
         private readonly authService: AuthService,
-
     ) { }
-
-  
-
 
   async login(cardNumber: string, pin: string) {
     const card = await this.creditCardService.findOneByCardNumberAndPin(cardNumber, pin);
@@ -111,16 +109,49 @@ export class DabService {
     account.balance -= amount;
     await account.save();
 
-    const transaction = await this.transactionService.create({
+    await this.transactionService.create({
       accountId: accountId,
       creditCardId: this.currentCard.id,
       type: TransactionType.WITHDRAW,
       amount: amount,
     });
 
+    await this.createLog(this.currentUser.id, accountId, 'withdraw', amount);
+
     return {
       message: 'Retrait effectué avec succès',
       newBalance: account.balance,
     };
+  }
+
+  async createLog(
+    userId: number,
+    accountId: number,
+    operationType: string,
+    amount: number,
+  ): Promise<DabLog> {
+    const log = await this.dabLogRepository.create<DabLog>({
+      userId,
+      accountId,
+      operationType,
+      amount,
+    });
+    return log;
+  }
+
+  async findAllDabLog(): Promise<DabLog[]> {
+    return this.dabLogRepository.findAll<DabLog>();
+  }
+
+  async findDabLogByUserId(userId: number): Promise<DabLog[]> {
+    return this.dabLogRepository.findAll({
+      where: { userId },
+    });
+  }
+
+  async findDabLogByAccountId(accountId: number): Promise<DabLog[]> {
+    return this.dabLogRepository.findAll({
+      where: { accountId },
+    });
   }
 }
