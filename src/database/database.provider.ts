@@ -1,6 +1,8 @@
 import { Sequelize } from 'sequelize-typescript';
+import { Account } from 'src/account/account.entity';
 import { CreditCard } from 'src/credit-card/credit-card.entity';
 import { Transaction } from 'src/transaction/transaction.entity';
+import { User } from 'src/user/user.entity';
 
 export const dbProvider = [
   {
@@ -14,7 +16,7 @@ export const dbProvider = [
         password: '5iw-nest',
         database: 'platinium_bank',
       });
-      sequelize.addModels([Transaction, CreditCard]);
+      sequelize.addModels([Transaction, CreditCard, User, Account]);
       await sequelize.sync({ force: true });
       return sequelize;
     },
