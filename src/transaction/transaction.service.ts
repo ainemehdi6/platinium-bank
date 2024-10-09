@@ -8,15 +8,15 @@ export class TransactionService {
     private transactionRepository: typeof Transaction,
   ) {}
 
-  create(transaction: Partial<Transaction>): Promise<Transaction> {
+  async create(transaction: Partial<Transaction>): Promise<Transaction> {
     return this.transactionRepository.create(transaction);
   }
 
-  findOne(id: number): Promise<Transaction> {
+  async findOne(id: number): Promise<Transaction> {
     return this.transactionRepository.findByPk<Transaction>(id);
   }
 
-  findAll(): Promise<Transaction[]> {
+  async findAll(): Promise<Transaction[]> {
     return this.transactionRepository.findAll();
   }
 
@@ -33,7 +33,7 @@ export class TransactionService {
     );
   }
 
-  delete(id: number): Promise<number> {
+  async delete(id: number): Promise<number> {
     return this.transactionRepository.destroy({
       where: { id },
     });

@@ -8,17 +8,17 @@ export class CreditCardService {
     private creditCardRepository: typeof CreditCard,
   ) {}
 
-  create(card: Partial<CreditCard>) {
+  async create(card: Partial<CreditCard>) {
     return this.creditCardRepository.create(card);
   }
 
-  findOne(id: number) {
+  async findOne(id: number) {
     return this.creditCardRepository.findOne({
       where: { id }
     });
   }
 
-  findAll(): Promise<CreditCard[]> {
+  async findAll(): Promise<CreditCard[]> {
     return this.creditCardRepository.findAll<CreditCard>();
   }
 
@@ -29,7 +29,7 @@ export class CreditCardService {
     });
   }
 
-  delete(id: number) {
+  async delete(id: number) {
     return this.creditCardRepository.destroy({
       where: { id },
     });

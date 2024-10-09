@@ -6,7 +6,11 @@ import {
   DataType,
   Unique,
   HasMany,
+  HasOne,
+  ForeignKey,
+  BelongsTo,
 } from 'sequelize-typescript';
+import { Account } from 'src/account/account.entity';
 import { Transaction } from 'src/transaction/transaction.entity';
 
 @Table
@@ -22,15 +26,34 @@ export class CreditCard extends Model {
   @Column(DataType.STRING(16))
   cardNumber: string;
 
-  @Column(DataType.STRING(5))
+  @Column({
+    type: DataType.STRING(5),
+    allowNull: false,
+  })
   expirationDate: string;
 
-  @Column(DataType.STRING(3))
+  @Column({
+    type: DataType.STRING(3),
+    allowNull: false,
+  })
   cvv: string;
 
-  @Column(DataType.STRING(4))
+  @Column({
+    type: DataType.STRING(4),
+    allowNull: false,
+  })
   pin: string;
 
   @HasMany(() => Transaction)
   transactions: Transaction[];
+
+  @ForeignKey(() => Account)
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: false,
+  })
+  accountId: number;
+
+  @BelongsTo(() => Account)
+  account: Account;
 }

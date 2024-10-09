@@ -9,6 +9,7 @@ import {
 } from 'sequelize-typescript';
 import { TransactionType } from './transaction-type.enum';
 import { CreditCard } from 'src/credit-card/credit-card.entity';
+import { Account } from 'src/account/account.entity';
 
 @Table
 export class Transaction extends Model {
@@ -41,4 +42,11 @@ export class Transaction extends Model {
 
   @BelongsTo(() => CreditCard)
   creditCard: CreditCard;
+
+  @ForeignKey(() => Account)
+  @Column
+  accountId: number;
+
+  @BelongsTo(() => Account)
+  account: Account;
 }
