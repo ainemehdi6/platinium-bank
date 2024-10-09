@@ -39,13 +39,6 @@ export class User extends Model {
   })
   password: string;
 
-  @Column({
-    type: DataType.FLOAT, 
-    allowNull: false,
-    defaultValue: 0.0, 
-  })
-  ceiling: number;
-
   @HasMany(() => Account)
   accounts: Account[];
 }
