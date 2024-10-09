@@ -20,6 +20,9 @@ export class User extends Model {
   @Column
   password: string;
 
+  @Column
+  ceiling : number;
+
   @HasMany(() => Account)
   accounts: Account[];
 }
