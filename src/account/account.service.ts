@@ -1,10 +1,12 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { Account } from './account.entity';
+import { CreditCardService } from 'src/credit-card/credit-card.service';
 @Injectable()
 export class AccountService {
     constructor(
         @Inject('ACCOUNT_REPOSITORY')
         private accountRepository: typeof Account,
+        private creditCardService: CreditCardService,
     ) { }
 
     async findAll(): Promise<Account[]> {
@@ -33,4 +35,16 @@ export class AccountService {
           where: { id },
         });
       }
+
+      async findAllByUserId(userId: number): Promise<Account[]> {
+        const accounts = await this.accountRepository.findAll({
+            where: { userId }
+        });
+
+        if (!accounts || accounts.length === 0) {
+            throw new NotFoundException(`Aucun compte trouvé pour l'utilisateur avec l'ID ${userId}`);
+        }
+
+        return accounts;
+    }
 }

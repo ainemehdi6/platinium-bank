@@ -38,4 +38,12 @@ export class TransactionService {
       where: { id },
     });
   }
+
+  async findLastTransactions(accountId: number): Promise<Transaction[]> {
+    return this.transactionRepository.findAll({
+      where: { accountId },
+      order: [['createdAt', 'DESC']],
+      limit: 10,
+    });
+  }
 }
