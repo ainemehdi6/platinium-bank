@@ -1,4 +1,3 @@
-// src/account/account.model.ts
 import { Table, Column, Model, ForeignKey, BelongsTo, PrimaryKey, AutoIncrement, DataType } from 'sequelize-typescript';
 import { User } from 'src/user/user.entity';
 export enum AccountType {
