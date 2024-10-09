@@ -43,6 +43,12 @@ export class CreditCard extends Model {
     allowNull: false,
   })
   pin: string;
+  
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: true,
+  })
+  ceiling: number;
 
   @HasMany(() => Transaction)
   transactions: Transaction[];
