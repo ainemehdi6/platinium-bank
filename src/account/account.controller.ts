@@ -11,4 +11,24 @@ export class AccountController {
     return this.accountService.findAll();
   }
 
+  @Get(':id')
+  async findOne(@Param('id') id: number): Promise<Account> {
+    return this.accountService.findOne(id);
+  }
+
+  @Post()
+  async create(@Body() Account: Account): Promise<Account> {
+    return this.accountService.create(Account);
+  }
+
+  @Put(':id')
+  async update(@Param('id') id: number, @Body() Account: Account): Promise<[number, Account[]]> {
+    return this.accountService.update(id, Account);
+  }
+
+  @Delete(':id')
+  delete(@Param('id') id: number) {
+    return this.accountService.delete(id);
+  }
+
 }

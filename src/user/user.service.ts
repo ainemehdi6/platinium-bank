@@ -12,4 +12,27 @@ export class UserService {
   async findAll(): Promise<User[]> {
     return this.usersRepository.findAll<User>();
   }
+
+  async create(card: Partial<User>) {
+    return this.usersRepository.create(card);
+  }
+
+  async findOne(id: number) {
+    return this.usersRepository.findOne({
+      where: { id }
+    });
+  }
+
+  async update(id: number, updateCardDto: Partial<User>) {
+    return this.usersRepository.update<User>(updateCardDto, {
+      where: { id },
+      returning: true,
+    });
+  }
+
+  async delete(id: number) {
+    return this.usersRepository.destroy({
+      where: { id },
+    });
+  }
 }
