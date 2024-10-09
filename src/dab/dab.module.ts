@@ -6,10 +6,18 @@ import { CreditCardModule } from 'src/credit-card/credit-card.module';
 import { TransactionModule } from 'src/transaction/transaction.module';
 import { AccountModule } from 'src/account/account.module';
 import { AuthModule } from 'src/auth/auth.module';
+import { dabProviders } from './dab.providers';
 
 @Module({
-  imports: [UserModule, CreditCardModule, TransactionModule, AccountModule, AuthModule],
+  imports: [
+    UserModule,
+    CreditCardModule,
+    TransactionModule,
+    AccountModule,
+    AuthModule,
+  ],
   controllers: [DabController],
-  providers: [DabService]
+  providers: [DabService, ...dabProviders],
+  exports: [DabService]
 })
 export class DabModule {}
