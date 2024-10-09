@@ -18,13 +18,15 @@ export class CreditCardService {
     });
   }
 
-  findAll(): Promise<CreditCard> {
+  findAll(): Promise<CreditCard[]> {
     return this.creditCardRepository.findAll<CreditCard>();
   }
 
   async update(id: number, updateCardDto: Partial<CreditCard>) {
-    await this.creditCardRepository.update(id, updateCardDto);
-    return this.creditCardRepository.findOne({ where: { id } });
+    return this.creditCardRepository.update<CreditCard>(updateCardDto, {
+      where: { id },
+      returning: true,
+    });
   }
 
   delete(id: number) {

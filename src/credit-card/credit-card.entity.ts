@@ -5,7 +5,9 @@ import {
   PrimaryKey,
   DataType,
   Unique,
+  HasMany,
 } from 'sequelize-typescript';
+import { Transaction } from 'src/transaction/transaction.entity';
 
 @Table
 export class CreditCard extends Model {
@@ -28,4 +30,7 @@ export class CreditCard extends Model {
 
   @Column(DataType.STRING(4))
   pin: string;
+
+  @HasMany(() => Transaction)
+  transactions: Transaction[];
 }
