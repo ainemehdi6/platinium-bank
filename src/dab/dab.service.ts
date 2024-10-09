@@ -34,30 +34,30 @@ export class DabService {
       throw new UnauthorizedException('Numéro de carte ou PIN invalide');
     }
 
-    const account = await this.accountService.findOne(card.accountId);
-    if (!account) {
-      throw new BadRequestException('Compte associé introuvable');
-    }
+        const account = await this.accountService.findOne(card.accountId);
+        if (!account) {
+            throw new BadRequestException('Compte associé introuvable');
+        }
 
-    if (account.type === AccountType.LIVRETA) {
-      throw new UnauthorizedException(
+        if (account.type === AccountType.LIVRETA) {
+            throw new UnauthorizedException(
         "Les comptes de type 'Livret A' ne peuvent pas être utilisés pour le DAB",
       );
-    }
+        }
 
-    const user = await this.userService.findOne(account.userId);
-    if (!user) {
-      throw new BadRequestException(
+        const user = await this.userService.findOne(account.userId);
+        if (!user) {
+            throw new BadRequestException(
         "L'utilisateur associé à la carte bleue est introuvable",
       );
+        }
+
+        this.currentUser = user;
+        this.currentCard = card;
+
+        const jwt = await this.authService.generateJwt(user.id);
+        return { message: 'Connexion réussie', accessToken: jwt.accessToken };
     }
-
-    this.currentUser = user;
-    this.currentCard = card;
-
-    const jwt = await this.authService.generateJwt(user.id);
-    return { message: 'Connexion réussie', accessToken: jwt.accessToken };
-  }
 
   async getAccountsBalance() {
     if (!this.currentUser) {
@@ -154,4 +154,88 @@ export class DabService {
       where: { accountId },
     });
   }
+
+    async transfer(fromAccountId: number, toAccountId: number, amount: number) {
+        if (!this.currentUser) {
+            throw new UnauthorizedException("L'utilisateur n'est pas connecté.");
+        }
+
+        const fromAccount = await this.accountService.findOne(fromAccountId);
+        const toAccount = await this.accountService.findOne(toAccountId);
+
+        if (!fromAccount || !toAccount) {
+            throw new BadRequestException("L'un des comptes spécifiés est introuvable.");
+        }
+
+        if (fromAccount.userId !== this.currentUser.id || toAccount.userId !== this.currentUser.id) {
+            throw new UnauthorizedException("Les virements ne peuvent être effectués qu'entre les comptes de l'utilisateur.");
+        }
+
+        if (fromAccount.balance < amount) {
+            throw new BadRequestException("Solde insuffisant pour le compte d'origine.");
+        }
+
+        fromAccount.balance -= amount;
+        toAccount.balance += amount;
+
+        await fromAccount.save();
+        await toAccount.save();
+
+        await this.transactionService.create({
+            type: TransactionType.TRANSFER,
+            amount,
+            date: new Date(),
+            accountId: fromAccount.id,
+            creditCardId: this.currentCard ? this.currentCard.id : null,
+        });
+
+        await this.transactionService.create({
+            type: TransactionType.TRANSFER,
+            amount,
+            date: new Date(),
+            accountId: toAccount.id,
+            creditCardId: null,
+        });
+
+        return { message: 'Virement effectué avec succès.' };
+    }
+
+    async depositCheck(accountId: number, amount: number, delay: number = 24 * 60 * 60 * 1000) {
+        if (!this.currentUser) {
+            throw new UnauthorizedException("L'utilisateur n'est pas connecté.");
+        }
+    
+        const account = await this.accountService.findOne(accountId);
+        if (!account) {
+            throw new BadRequestException("Compte introuvable.");
+        }
+    
+        if (account.userId !== this.currentUser.id) {
+            throw new UnauthorizedException("Vous ne pouvez déposer un chèque que sur vos propres comptes.");
+        }
+    
+        setTimeout(async () => {
+            account.balance += amount;
+            await account.save();
+    
+            await this.transactionService.create({
+                type: TransactionType.TRANSFER,
+                amount,
+                date: new Date(),
+                accountId: account.id,
+                creditCardId: null
+            });
+
+        }, delay);
+    
+        return { message: 'Le dépôt de chèque sera crédité après le délai spécifié.' };
+    }
+
+    async logout() {
+        this.currentUser = null;
+        this.currentCard = null;
+    
+        return { message: 'Déconnexion réussie. Vous avez récupéré votre carte.' };
+    }
+
 }
