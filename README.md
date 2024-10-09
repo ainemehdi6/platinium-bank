@@ -34,11 +34,11 @@ Si vous souhaitez choisir vous même le nom de la base, de l'utilisateur ainsi q
 2. Insertion du jeu de données
    
   ```SQL
-  -- Création de la base de données
+ -- Création de la base de données
 CREATE DATABASE IF NOT EXISTS platinium_bank;
 USE platinium_bank;
 
--- Création de la table User
+-- Création de la table Users
 CREATE TABLE IF NOT EXISTS `Users` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
   `firstName` VARCHAR(255) NOT NULL,
@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS `Users` (
   `updatedAt` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- Création de la table Account
+-- Création de la table Accounts
 CREATE TABLE IF NOT EXISTS `Accounts` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
   `type` ENUM('courant', 'pro', 'livretA', 'commun') NOT NULL,
@@ -62,20 +62,21 @@ CREATE TABLE IF NOT EXISTS `Accounts` (
   FOREIGN KEY (`secondUserId`) REFERENCES `Users`(`id`) ON DELETE SET NULL
 );
 
--- Création de la table CreditCard
+-- Création de la table CreditCards
 CREATE TABLE IF NOT EXISTS `CreditCards` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
   `cardNumber` VARCHAR(16) NOT NULL UNIQUE,
   `expirationDate` VARCHAR(5) NOT NULL, -- Format MM/YY
   `cvv` VARCHAR(3) NOT NULL,
   `pin` VARCHAR(4) NOT NULL,
+  `ceiling` FLOAT NOT NULL DEFAULT 1000.0, -- Ajout de la colonne ceiling avec une valeur par défaut
   `accountId` INT NOT NULL,
   `createdAt` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updatedAt` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (`accountId`) REFERENCES `Accounts`(`id`)
 );
 
--- Création de la table Transaction
+-- Création de la table Transactions
 CREATE TABLE IF NOT EXISTS `Transactions` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
   `type` ENUM('withdraw', 'deposit', 'transfer') NOT NULL,
@@ -100,15 +101,22 @@ VALUES
 -- Insertion des comptes
 INSERT INTO `Accounts` (`type`, `balance`, `userId`, `secondUserId`)
 VALUES
-('courant', 1000.0, 1, NULL), -- Compte courant pour John Doe
-('pro', 5000.0, 1, NULL), -- Compte pro pour John Doe
-('livretA', 300.0, 2, NULL); -- Compte livret A pour Jane Doe
+('courant', 1000.0, 1, NULL),
+('pro', 5000.0, 1, NULL),
+('livretA', 300.0, 2, NULL);
 
--- Insertion des cartes bleues
-INSERT INTO `CreditCards` (`cardNumber`, `expirationDate`, `cvv`, `pin`, `accountId`)
+-- Insertion des cartes de crédit
+INSERT INTO `CreditCards` (`cardNumber`, `expirationDate`, `cvv`, `pin`, `ceiling`, `accountId`)
 VALUES
-('1234567812345678', '12/25', '123', '1111', 1), -- Carte pour le compte courant de John Doe
-('8765432187654321', '01/26', '456', '2222', 2); -- Carte pour le compte pro de John Doe
+('1234567812345678', '12/25', '123', '1111', 1500.0, 1),
+('8765432187654321', '01/26', '456', '2222', 2000.0, 2);
+
+-- Insertion des transactions (exemple de données)
+INSERT INTO `Transactions` (`type`, `amount`, `date`, `fromAccountId`, `toAccountId`, `accountId`)
+VALUES
+('withdraw', 100.0, NOW(), NULL, NULL, 1),
+('deposit', 200.0, NOW(), NULL, NULL, 2),
+('transfer', 50.0, NOW(), 1, 2, NULL);
 
 ```
 

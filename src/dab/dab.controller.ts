@@ -5,11 +5,11 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('dab')
 export class DabController {
-    constructor(private readonly dabService: DabService) {}
+    constructor(private readonly dabService: DabService) { }
 
     @Post('login')
     async login(@Body() loginDto: { cardNumber: string; pin: string }) {
-      return this.dabService.login(loginDto.cardNumber, loginDto.pin);
+        return this.dabService.login(loginDto.cardNumber, loginDto.pin);
     }
 
     @UseGuards(JwtAuthGuard)
@@ -48,20 +48,20 @@ export class DabController {
         return this.dabService.withdraw(accountId, withdrawDto.amount);
     }
 
-  @Get('logs')
-  async getLogsByDabId(): Promise<DabLog[]> {
-    return this.dabService.findAllDabLog();
-  }
+    @Get('logs')
+    async getLogsByDabId(): Promise<DabLog[]> {
+        return this.dabService.findAllDabLog();
+    }
 
-  @Get('logs/user/:userId')
-  async getLogsByUserId(@Param('userId') userId: number): Promise<DabLog[]> {
-    return this.dabService.findDabLogByUserId(userId);
-  }
+    @Get('logs/user/:userId')
+    async getLogsByUserId(@Param('userId') userId: number): Promise<DabLog[]> {
+        return this.dabService.findDabLogByUserId(userId);
+    }
 
-  @Get('logs/account/:accountId')
-  async getLogsByAccountId(
-    @Param('accountId') accountId: number,
-  ): Promise<DabLog[]> {
-    return this.dabService.findDabLogByAccountId(accountId);
-  }
+    @Get('logs/account/:accountId')
+    async getLogsByAccountId(
+        @Param('accountId') accountId: number,
+    ): Promise<DabLog[]> {
+        return this.dabService.findDabLogByAccountId(accountId);
+    }
 }

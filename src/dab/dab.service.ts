@@ -11,7 +11,6 @@ import { AuthService } from 'src/auth/auth.service';
 import { CreditCard } from 'src/credit-card/credit-card.entity';
 import { CreditCardService } from 'src/credit-card/credit-card.service';
 import { TransactionType } from 'src/transaction/transaction-type.enum';
-import { Transaction } from 'src/transaction/transaction.entity';
 import { TransactionService } from 'src/transaction/transaction.service';
 import { User } from 'src/user/user.entity';
 import { UserService } from 'src/user/user.service';

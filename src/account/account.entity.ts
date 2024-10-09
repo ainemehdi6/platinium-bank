@@ -11,7 +11,10 @@ export enum AccountType {
 export class Account extends Model<Account> {
     @PrimaryKey
     @AutoIncrement
-    @Column
+    @Column({
+        type: DataType.INTEGER,
+        allowNull: false,
+    })
     id: number;
 
     @Column({

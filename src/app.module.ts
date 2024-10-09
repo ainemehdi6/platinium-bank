@@ -5,7 +5,6 @@ import { CreditCardModule } from './credit-card/credit-card.module';
 import { DatabaseModule } from './database/database.module';
 import { TransactionModule } from './transaction/transaction.module';
 import { UserModule } from './user/user.module';
-import { AccessDeniedError } from 'sequelize';
 import { AccountModule } from './account/account.module';
 import { DabModule } from './dab/dab.module';
 import { AuthModule } from './auth/auth.module';
