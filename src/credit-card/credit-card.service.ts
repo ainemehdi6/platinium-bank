@@ -4,7 +4,7 @@ import { CreditCard } from './credit-card.entity';
 @Injectable()
 export class CreditCardService {
   constructor(
-    @Inject('CREDIT_CARD_REPOSITORY')
+    @Inject('CREDITCARD_REPOSITORY')
     private creditCardRepository: typeof CreditCard,
   ) {}
 
