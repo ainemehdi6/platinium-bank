@@ -114,6 +114,15 @@ export class DabService {
       throw new BadRequestException('Solde insuffisant');
     }
 
+    const todaysCeiling =
+      await this.transactionService.findTodayWithdrawalsTotal(account.id);
+
+    if (todaysCeiling + amount > this.currentCard.ceiling) {
+      throw new BadRequestException(
+        'Vous ne pouvez pas depassez votre plafond de retrait quotidien',
+      );
+    }
+
     account.balance -= amount;
     await account.save();
 

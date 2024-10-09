@@ -3,7 +3,6 @@ import { DabService } from './dab.service';
 import { DabLog } from './dab.entity';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
-
 @Controller('dab')
 export class DabController {
     constructor(private readonly dabService: DabService) {}
@@ -14,7 +13,7 @@ export class DabController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Patch('logout')
+    @Post('logout')
     async logout() {
         return this.dabService.logout();
     }

@@ -1,5 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { Transaction } from './transaction.entity';
+import { TransactionType } from './transaction-type.enum';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class TransactionService {
@@ -46,4 +48,25 @@ export class TransactionService {
       limit: 10,
     });
   }
+
+  async findTodayWithdrawalsTotal(accountId: number): Promise<number> {
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const totalWithdrawals = await this.transactionRepository.sum('amount', {
+      where: {
+        accountId,
+        type: TransactionType.WITHDRAW,
+        createdAt: {
+          [Op.between]: [startOfDay, endOfDay],
+        },
+      },
+    });
+
+    return totalWithdrawals || 0;
+  }
+
 }
