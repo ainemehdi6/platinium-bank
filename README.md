@@ -1,4 +1,4 @@
-# Projet DAB API
+# Projet DAB API GROUPE 3
 
 Ce projet est une API de Distributeur Automatique de Billets (DAB) développée avec NestJS. L'API permet de simuler les opérations courantes d'un DAB.
 ## Prérequis
@@ -210,12 +210,11 @@ Corps de la requête :
 {
   "amount": 100
 }
-Remplacez :accountId par l'identifiant du compte que vous souhaitez utiliser pour les requêtes.
+Remplacez : accountId par l'identifiant du compte que vous souhaitez utiliser pour les requêtes.
 ```
 
 **Remarques**
 
 Toutes les routes protégées nécessitent un token JWT valide dans l'en-tête Authorization.
 Le token JWT est obtenu après une connexion réussie via la route /dab/login.
-
 
